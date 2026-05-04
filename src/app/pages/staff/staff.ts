@@ -68,9 +68,10 @@ import { RouterLink } from '@angular/router';
                 </div>
               </div>
               
-              <button class="w-full mt-5 bg-gray-50 hover:bg-[#F9BD15] text-[#2A1D1A] hover:text-white font-bold text-xs py-2.5 rounded-xl transition-colors border border-gray-100 hover:border-[#F9BD15]">
-                ดูโปรไฟล์
-              </button>
+              <button routerLink="/admin/staff/profile" 
+        class="w-full mt-5 bg-gray-50 hover:bg-[#F9BD15] text-[#2A1D1A] hover:text-white font-bold text-xs py-2.5 rounded-xl transition-colors border border-gray-100 hover:border-[#F9BD15]">
+  ดูโปรไฟล์
+</button>
             </div>
           </div>
         }

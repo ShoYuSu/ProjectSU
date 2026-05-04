@@ -8,7 +8,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   template: `
     <div class="flex h-screen bg-[#FDFBF7] font-sans text-[#2C2220] overflow-hidden">
-      <aside class="w-[280px] bg-[#2A1D1A] flex flex-col shadow-2xl z-20 shrink-0 text-white">
+      <aside class="w-[280px] bg-[#3A1E1D] flex flex-col shadow-2xl z-20 shrink-0 text-white">
         
         <div class="p-8 pt-12 flex flex-col items-center border-b border-white/5 mb-4">
           <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center p-1 mb-4 shadow-lg">
@@ -17,7 +17,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
           <h1 class="font-black tracking-widest text-sm uppercase">SU SCIENCE MIS</h1>
         </div>
 
-        <nav class="flex-1 px-6 space-y-2 overflow-y-auto">
+        <nav class="flex-1 px-6 space-y-2 overflow-y-auto no-scrollbar">
           <button routerLink="/admin/dashboard" routerLinkActive="bg-[#F9BD15] text-[#2A1D1A]" [routerLinkActiveOptions]="{exact: true}" 
             class="w-full flex items-center px-6 py-4 rounded-2xl transition-all font-bold text-sm text-left hover:bg-white/5">
             Dashboard
@@ -87,7 +87,30 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
         </div>
       </main>
     </div>
-  `
+  `,
+  styles: [`
+    /* คลาสสำหรับซ่อน Scrollbar */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    /* Animation */
+    .animate-in { animation: fadeIn 0.3s ease-out forwards; }
+    .slide-in-from-top-2 { animation: slideDown 0.3s ease-out forwards; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  `]
 })
 export class AdminLayoutComponent {
   isStaffExpanded = signal(false);

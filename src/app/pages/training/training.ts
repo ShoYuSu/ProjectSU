@@ -44,7 +44,7 @@ import { CommonModule } from '@angular/common';
          </div>
       </div>
 
-      <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+      <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden relative">
          <div class="p-8 border-b border-gray-50 flex items-center gap-3">
             <div class="text-[#F9BD15]">
                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -52,33 +52,47 @@ import { CommonModule } from '@angular/common';
             <h3 class="font-black text-[#2A1D1A] text-lg">สรุปการอบรมสัมมนา</h3>
          </div>
          
-         <div class="overflow-x-auto min-h-[300px]">
-            <table class="w-full text-left min-w-[1000px]">
+         <div class="overflow-x-auto min-h-[300px] custom-scrollbar">
+            <table class="w-full text-left min-w-[1800px]">
                <thead class="bg-gray-50 text-xs text-gray-500 font-bold">
                   <tr>
                      <th class="py-5 px-8 w-20">ลำดับ</th>
-                     <th class="py-5 px-4 w-48">รายชื่อ</th>
+                     
+                     <th class="py-5 px-4 w-48 sticky left-0 bg-gray-50 z-10 border-r border-gray-100 shadow-[inset_-4px_0_10px_-6px_rgba(0,0,0,0.1)]">รายชื่อ</th>
+                     
                      <th class="py-5 px-4 w-64">หัวข้ออบรม สัมมนา</th>
                      <th class="py-5 px-4 w-32">วันที่เข้าร่วม</th>
                      <th class="py-5 px-4 w-56">หน่วยงานที่จัด/สถานที่</th>
+                     
+                     <th class="py-5 px-4 w-64">ประโยชน์ที่ได้รับ</th>
+                     <th class="py-5 px-4 w-64">รายละเอียดการนำไปใช้</th>
+                     <th class="py-5 px-4 w-48">หมายเหตุ</th>
+                     
                      <th class="py-5 px-8 w-32 text-right">ค่าใช้จ่าย (บาท)</th>
                   </tr>
                </thead>
                <tbody class="divide-y divide-gray-50">
                   @if (mockTrainings.length > 0) {
                      @for (training of mockTrainings; track training.id) {
-                        <tr class="hover:bg-gray-50/50 transition-colors">
+                        <tr class="group hover:bg-gray-50/50 transition-colors">
                            <td class="py-6 px-8 text-sm font-bold text-gray-500 align-top">{{ training.id }}</td>
-                           <td class="py-6 px-4 text-sm font-bold text-[#2A1D1A] align-top">{{ training.staffName }}</td>
+                           
+                           <td class="py-6 px-4 text-sm font-bold text-[#2A1D1A] align-top sticky left-0 bg-white group-hover:bg-gray-50 z-10 border-r border-gray-50 transition-colors shadow-[inset_-4px_0_10px_-6px_rgba(0,0,0,0.1)]">{{ training.staffName }}</td>
+                           
                            <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top">{{ training.topic }}</td>
                            <td class="py-6 px-4 text-sm font-bold text-gray-500 align-top">{{ training.date }}</td>
                            <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top">{{ training.location }}</td>
+                           
+                           <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top">{{ training.benefits }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top">{{ training.implementation }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top">{{ training.remarks }}</td>
+                           
                            <td class="py-6 px-8 text-sm font-black text-[#2A1D1A] text-right align-top">{{ training.cost | number }}</td>
                         </tr>
                      }
                   } @else {
                      <tr>
-                        <td colspan="6" class="py-20 text-center text-gray-400 font-bold">ยังไม่มีข้อมูลการอบรม</td>
+                        <td colspan="9" class="py-20 text-center text-gray-400 font-bold">ยังไม่มีข้อมูลการอบรม</td>
                      </tr>
                   }
                </tbody>
@@ -112,10 +126,25 @@ import { CommonModule } from '@angular/common';
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    
+    /* แต่ง Scrollbar แนวนอนให้ดูมินิมอลเข้ากับดีไซน์ */
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f9fafb; /* gray-50 */
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #e5e7eb; /* gray-200 */
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #d1d5db; /* gray-300 */
+    }
   `]
 })
 export class TrainingComponent {
-  // ข้อมูลจำลองสำหรับตารางอบรม (สามารถใส่เพิ่มได้)
   mockTrainings = [
     {
       id: 1,
@@ -123,6 +152,9 @@ export class TrainingComponent {
       topic: 'การประยุกต์ใช้ AI ในการเรียนการสอนยุคดิจิทัล',
       date: '15 พ.ค. 2568',
       location: 'โรงแรมเซ็นทารา แกรนด์ แอท เซ็นทรัลเวิลด์',
+      benefits: 'เข้าใจเทคนิคการเขียน Prompt ที่มีประสิทธิภาพ และสามารถประยุกต์ใช้ AI เพื่อสร้างสื่อการสอนได้อย่างรวดเร็ว',
+      implementation: 'นำไปปรับใช้ในรายวิชา CS101 ให้นักศึกษาใช้ AI เป็นผู้ช่วยในการแก้ไขปัญหา (Debugging) โค้ดเบื้องต้น',
+      remarks: '-',
       cost: 4500
     },
     {
@@ -131,6 +163,9 @@ export class TrainingComponent {
       topic: 'อบรมเชิงปฏิบัติการ การเขียนขอทุนวิจัยระดับชาติ',
       date: '20-22 เม.ย. 2568',
       location: 'สำนักงานการวิจัยแห่งชาติ (วช.)',
+      benefits: 'ได้เรียนรู้กรอบการประเมินโครงการวิจัย และเทคนิคการเขียนข้อเสนอโครงการ (Proposal) ที่ตรงใจแหล่งทุนมากขึ้น',
+      implementation: 'เตรียมนำมาใช้ในการเขียนยื่นขอทุนวิจัย วช. ในหมวดเทคโนโลยีและนวัตกรรม ประจำปีงบประมาณ 2569',
+      remarks: 'ได้รับประกาศนียบัตรผ่านการอบรม',
       cost: 0
     }
   ];

@@ -2,14 +2,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-su-brown: #3A1E1D;
-  --color-su-gold: #F9BD15;
-  --color-su-bg: #FDFCF8;
+  /* เปลี่ยนโทนสีให้สว่างขึ้น ดูขาวโล่ง */
+  --color-su-brown: #2D2D2D;       /* เปลี่ยนจากน้ำตาลเข้มเป็นเทาดำสนิทที่ดูสะอาดขึ้น */
+  --color-su-gold: #FFC107;        /* สีเหลืองทองที่สว่างขึ้นอีกนิด */
+  --color-su-bg: #FFFFFF;          /* เปลี่ยนพื้นหลังเป็นสีขาวล้วน 100% */
+  --color-su-surface: #F9FAFB;     /* สีสำหรับ Card หรือตาราง (สีเทาอ่อนมาก) */
   --font-sans: 'Prompt', sans-serif;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-su-bg);
+  background-color: var(--color-su-bg); /* พื้นหลังสีขาว */
   color: var(--color-su-brown);
 }

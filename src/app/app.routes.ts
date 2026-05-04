@@ -9,7 +9,7 @@ import { ResearchArticleComponent } from './pages/research/research-article/rese
 import { TrainingComponent } from './pages/training/training';
 import { PlansComponent } from './pages/plans/plans/plans';
 import { AddPlansComponent } from './pages/plans/add-plans/add-plans';
-
+import { ProfileComponent } from './pages/staff/profile/profile';
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -20,6 +20,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'staff', component: StaffComponent },
       { path: 'staff/add', component: AddStaffComponent },
+      { path: 'staff/profile', component: ProfileComponent },
       { path: 'research', component: ResearchComponent },
       { path: 'research/article', component: ResearchArticleComponent },
       { path: 'training', component: TrainingComponent },
