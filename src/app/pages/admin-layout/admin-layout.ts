@@ -10,6 +10,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
     <div class="flex h-screen bg-[#FDFBF7] font-sans text-[#2C2220] overflow-hidden">
       <aside class="w-[280px] bg-[#3A1E1D] flex flex-col shadow-2xl z-20 shrink-0 text-white">
         
+        <!-- Header & Logo -->
         <div class="p-8 pt-12 flex flex-col items-center border-b border-white/5 mb-4">
           <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center p-1 mb-4 shadow-lg">
              <img src="https://upload.wikimedia.org/wikipedia/th/thumb/a/a2/Siam_University_Logo.svg/150px-Siam_University_Logo.svg.png" class="object-contain h-12" />
@@ -17,6 +18,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
           <h1 class="font-black tracking-widest text-sm uppercase">SU SCIENCE MIS</h1>
         </div>
 
+        <!-- Main Navigation -->
         <nav class="flex-1 px-6 space-y-2 overflow-y-auto no-scrollbar">
           <button routerLink="/admin/dashboard" routerLinkActive="bg-[#F9BD15] text-[#2A1D1A]" [routerLinkActiveOptions]="{exact: true}" 
             class="w-full flex items-center px-6 py-4 rounded-2xl transition-all font-bold text-sm text-left hover:bg-white/5">
@@ -70,17 +72,38 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
           </button>
         </nav>
 
-        <div class="p-6 mt-auto">
+        <!-- ================= Bottom Actions (Link & Profile) ================= -->
+        <div class="p-6 mt-auto flex flex-col gap-3">
+          
+          <!-- ⭐️ ปุ่มไปยังระบบที่ปรึกษา (เพิ่มใหม่) ⭐️ -->
+          <a href="URL_ของระบบที่ปรึกษา" target="_blank"
+             class="flex items-center justify-between w-full p-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl border border-white/5 transition-all group shadow-sm">
+             <div class="flex items-center gap-3">
+                <div class="p-2 bg-[#F9BD15]/10 rounded-lg text-[#F9BD15]">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div class="flex flex-col text-left">
+                   <span class="text-[10px] text-gray-400 font-bold mb-0.5">ไปยังระบบอื่น</span>
+                   <span class="font-bold text-sm text-white group-hover:text-[#F9BD15] transition-colors">ระบบที่ปรึกษา</span>
+                </div>
+             </div>
+             <!-- ไอคอนลูกศรชี้ออกเพื่อสื่อถึง External Link -->
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-[#F9BD15] transition-colors"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+
+          <!-- Profile Admin -->
           <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl cursor-pointer hover:bg-white/10 transition-colors" routerLink="/login">
-             <div class="w-10 h-10 rounded-full border-2 border-[#F9BD15] flex items-center justify-center text-[#F9BD15] font-black text-lg">A</div>
+             <div class="w-10 h-10 rounded-full border-2 border-[#F9BD15] flex items-center justify-center text-[#F9BD15] font-black text-lg shadow-sm bg-[#3A1E1D]">A</div>
              <div class="text-left">
                <p class="text-xs font-black text-white uppercase leading-none mb-1">ADMIN</p>
                <p class="text-[9px] text-[#F9BD15] uppercase tracking-widest">SYSTEM ADMIN</p>
              </div>
           </div>
+
         </div>
       </aside>
 
+      <!-- Main Content Area -->
       <main class="flex-1 overflow-y-auto p-10 bg-[#FAFAFA]">
         <div class="max-w-[1200px] mx-auto animate-in fade-in">
           <router-outlet></router-outlet>

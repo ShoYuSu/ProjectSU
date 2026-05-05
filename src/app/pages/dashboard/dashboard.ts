@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,13 +8,16 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="space-y-8 animate-in fade-in duration-500 pb-10">
       
+      <!-- ================= Header ================= -->
       <div class="flex items-center gap-3">
         <div class="w-1.5 h-6 bg-[#F9BD15] rounded-full"></div>
-        <h2 class="font-black text-[#2A1D1A] text-xl uppercase tracking-widest">Dashboard</h2>
+        <h2 class="font-black text-[#846058] text-xl uppercase tracking-widest">Dashboard</h2>
       </div>
 
+      <!-- ================= 3 Summary Cards ================= -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
+        <!-- Card 1 -->
         <div class="bg-white p-8 rounded-3xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-gray-100 flex flex-col justify-between">
            <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-gray-400">
              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -29,6 +32,7 @@ import { CommonModule } from '@angular/common';
            </div>
         </div>
 
+        <!-- Card 2 -->
         <div class="bg-white p-8 rounded-3xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-gray-100 flex flex-col justify-between">
            <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-gray-400">
              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
@@ -43,6 +47,7 @@ import { CommonModule } from '@angular/common';
            </div>
         </div>
 
+        <!-- Card 3 -->
         <div class="bg-white p-8 rounded-3xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-gray-100 flex flex-col justify-between">
            <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-gray-400">
              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/></svg>
@@ -58,15 +63,34 @@ import { CommonModule } from '@angular/common';
 
       </div>
 
+      <!-- ================= กราฟที่ 1: โครงการวิจัย ================= -->
       <div class="bg-white rounded-3xl p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-gray-100">
          <div class="flex justify-between items-center mb-10">
             <h3 class="font-bold text-[#2A1D1A] text-base flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#F9BD15]"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
               สถิติโครงการวิจัย จำนวนและงบประมาณ
             </h3>
-            <button class="bg-[#F9BD15] text-white text-xs px-4 py-2 rounded-lg font-bold flex items-center gap-2 shadow-sm">
-              จำนวน <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
+            
+            <!-- ⭐️ Dropdown 1 ⭐️ -->
+            <div class="relative w-36">
+              <button type="button" (click)="toggleDropdown1()" 
+                class="w-full px-4 py-2 bg-[#F9BD15] text-white rounded-xl font-bold text-xs border border-transparent outline-none flex justify-between items-center transition-all hover:brightness-105 shadow-sm">
+                 <span>{{ selectedOption1() }}</span>
+                 <svg [class.rotate-180]="isDropdown1Open()" class="w-4 h-4 transition-transform text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+
+              @if (isDropdown1Open()) {
+                <ul class="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden flex flex-col animate-in slide-in-from-top-2">
+                   @for (item of options1; track item) {
+                     <li (click)="selectOption1(item)" 
+                       class="px-4 py-3 text-xs font-bold cursor-pointer transition-colors hover:bg-[#FEF5DD]" 
+                       [ngClass]="selectedOption1() === item ? 'text-[#F9BD15] bg-[#FEF5DD]' : 'text-gray-500'">
+                       {{ item }}
+                     </li>
+                   }
+                </ul>
+              }
+            </div>
          </div>
          
          <div class="h-64 flex items-end justify-around relative px-10 pb-6 mt-4">
@@ -78,27 +102,51 @@ import { CommonModule } from '@angular/common';
             <div class="absolute left-8 right-8 bottom-6 h-px bg-gray-200"></div>
             
             @for (item of chartData1; track item.year) {
-              <div class="relative z-10 w-16 flex flex-col items-center group">
-                 <span class="text-[#F9BD15] font-bold text-sm mb-2">{{item.value}}</span>
-                 <div class="w-12 bg-[#F9BD15] transition-all duration-1000 ease-out hover:brightness-110 cursor-pointer" [style.height.%]="item.value"></div>
+              <div class="relative z-10 w-16 h-full flex flex-col items-center justify-end group">
+                 <!-- ⭐️ อนิเมชันตัวเลข ⭐️ -->
+                 <span class="text-[#F9BD15] font-bold text-sm mb-2 opacity-0 animate-[fadeInTop_0.5s_ease-out_0.5s_forwards]">{{item.value}}</span>
+                 
+                 <!-- ⭐️ แท่งกราฟเติบโตตามเปอร์เซ็นต์ ⭐️ -->
+                 <div class="w-12 bg-[#F9BD15] rounded-t-sm transition-all duration-1000 ease-out origin-bottom animate-[growUp_1s_ease-out_forwards] hover:brightness-110 cursor-pointer" 
+                      [style.height.%]="item.value"></div>
+                 
                  <span class="absolute -bottom-6 text-xs font-bold text-[#2A1D1A]">{{item.year}}</span>
               </div>
             }
          </div>
          <div class="flex justify-end mt-4 text-[10px] font-bold text-[#2A1D1A] items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-[#F9BD15]"></div> จำนวน
+            <div class="w-3 h-3 rounded-full bg-[#F9BD15]"></div> {{ selectedOption1() }}
          </div>
       </div>
 
+      <!-- ================= กราฟที่ 2: บทความวิจัย ================= -->
       <div class="bg-white rounded-3xl p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-gray-100">
          <div class="flex justify-between items-center mb-10">
             <h3 class="font-bold text-[#2A1D1A] text-base flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#F9BD15]"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
               สถิติบทความวิจัย ประชุมวิจัยและวารสาร
             </h3>
-            <button class="bg-[#F9BD15] text-white text-xs px-4 py-2 rounded-lg font-bold flex items-center gap-2 shadow-sm">
-              ประชุมวิจัย <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
+            
+            <!-- ⭐️ Dropdown 2 ⭐️ -->
+            <div class="relative w-36">
+              <button type="button" (click)="toggleDropdown2()" 
+                class="w-full px-4 py-2 bg-[#F9BD15] text-white rounded-xl font-bold text-xs border border-transparent outline-none flex justify-between items-center transition-all hover:brightness-105 shadow-sm">
+                 <span>{{ selectedOption2() }}</span>
+                 <svg [class.rotate-180]="isDropdown2Open()" class="w-4 h-4 transition-transform text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+
+              @if (isDropdown2Open()) {
+                <ul class="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden flex flex-col animate-in slide-in-from-top-2">
+                   @for (item of options2; track item) {
+                     <li (click)="selectOption2(item)" 
+                       class="px-4 py-3 text-xs font-bold cursor-pointer transition-colors hover:bg-[#FEF5DD]" 
+                       [ngClass]="selectedOption2() === item ? 'text-[#F9BD15] bg-[#FEF5DD]' : 'text-gray-500'">
+                       {{ item }}
+                     </li>
+                   }
+                </ul>
+              }
+            </div>
          </div>
          
          <div class="h-64 flex items-end justify-around relative px-10 pb-6 mt-4">
@@ -110,18 +158,22 @@ import { CommonModule } from '@angular/common';
             <div class="absolute left-8 right-8 bottom-6 h-px bg-gray-200"></div>
             
             @for (item of chartData2; track item.year) {
-              <div class="relative z-10 w-16 flex flex-col items-center group">
-                 <span class="text-[#F9BD15] font-bold text-sm mb-2">{{item.value}}</span>
-                 <div class="w-12 bg-[#F9BD15] transition-all duration-1000 ease-out hover:brightness-110 cursor-pointer" [style.height.%]="item.value"></div>
+              <div class="relative z-10 w-16 h-full flex flex-col items-center justify-end group">
+                 <span class="text-[#F9BD15] font-bold text-sm mb-2 opacity-0 animate-[fadeInTop_0.5s_ease-out_0.5s_forwards]">{{item.value}}</span>
+                 
+                 <div class="w-12 bg-[#F9BD15] rounded-t-sm transition-all duration-1000 ease-out origin-bottom animate-[growUp_1s_ease-out_forwards] hover:brightness-110 cursor-pointer" 
+                      [style.height.%]="item.value"></div>
+                 
                  <span class="absolute -bottom-6 text-xs font-bold text-[#2A1D1A]">{{item.year}}</span>
               </div>
             }
          </div>
          <div class="flex justify-end mt-4 text-[10px] font-bold text-[#2A1D1A] items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-[#F9BD15]"></div> จำนวน
+            <div class="w-3 h-3 rounded-full bg-[#F9BD15]"></div> {{ selectedOption2() }}
          </div>
       </div>
 
+      <!-- ================= Pie Chart Section ================= -->
       <div class="bg-white rounded-3xl p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-gray-100 mb-10">
          <div class="mb-8">
             <h3 class="font-bold text-[#2A1D1A] text-base flex items-center gap-2 mb-1">
@@ -172,14 +224,28 @@ import { CommonModule } from '@angular/common';
   `,
   styles: [`
     .animate-in { animation: fadeIn 0.4s ease-out forwards; }
+    
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* อนิเมชันแท่งกราฟงอกขึ้นมา */
+    @keyframes growUp {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+    
+    /* อนิเมชันตัวเลขบนแท่งกราฟค่อยๆ ปรากฏ */
+    @keyframes fadeInTop {
+      from { opacity: 0; transform: translateY(5px); }
       to { opacity: 1; transform: translateY(0); }
     }
   `]
 })
 export class DashboardComponent {
-  // ข้อมูลจำลองสำหรับกราฟตามภาพ
+  
+  // ================= ข้อมูลกราฟ =================
   chartData1 = [
     { year: 2565, value: 20 },
     { year: 2566, value: 27 },
@@ -195,4 +261,34 @@ export class DashboardComponent {
     { year: 2568, value: 49 },
     { year: 2569, value: 75 }
   ];
+
+  // ================= ควบคุม Dropdown 1 =================
+  options1 = ['จำนวน', 'งบประมาณ'];
+  isDropdown1Open = signal(false);
+  selectedOption1 = signal(this.options1[0]);
+
+  toggleDropdown1() {
+    this.isDropdown1Open.set(!this.isDropdown1Open());
+    this.isDropdown2Open.set(false); // ปิดอันล่างถ้าเปิดอันบน
+  }
+
+  selectOption1(option: string) {
+    this.selectedOption1.set(option);
+    this.isDropdown1Open.set(false);
+  }
+
+  // ================= ควบคุม Dropdown 2 =================
+  options2 = ['ประชุมวิจัย', 'วารสาร'];
+  isDropdown2Open = signal(false);
+  selectedOption2 = signal(this.options2[0]);
+
+  toggleDropdown2() {
+    this.isDropdown2Open.set(!this.isDropdown2Open());
+    this.isDropdown1Open.set(false); // ปิดอันบนถ้าเปิดอันล่าง
+  }
+
+  selectOption2(option: string) {
+    this.selectedOption2.set(option);
+    this.isDropdown2Open.set(false);
+  }
 }
