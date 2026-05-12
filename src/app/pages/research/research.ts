@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, computed } from '@angular/core'; // ⭐️ แก้ตรงนี้: เพิ่ม signal และ computed
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -55,14 +55,20 @@ import { CommonModule } from '@angular/common';
                   </tr>
                </thead>
                <tbody class="divide-y divide-gray-50">
-                  @for (project of mockProjects; track project.id) {
-                     <tr class="hover:bg-gray-50/50 transition-colors">
-                        <td class="py-6 px-8 text-sm font-bold text-gray-500">{{ project.id }}</td>
-                        <td class="py-6 px-4 text-sm font-bold text-[#2A1D1A] pr-10 leading-relaxed">{{ project.name }}</td>
-                        <td class="py-6 px-4 text-sm font-bold text-gray-500">{{ project.author }}</td>
-                        <td class="py-6 px-4 text-sm font-bold text-gray-500 text-center">{{ project.year }}</td>
-                        <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed">{{ project.fundSource }}</td>
-                        <td class="py-6 px-8 text-sm font-black text-[#2A1D1A] text-right">{{ project.budget | number }}</td>
+                  @if (paginatedProjects().length > 0) {
+                     @for (project of paginatedProjects(); track project.id) {
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                           <td class="py-6 px-8 text-sm font-bold text-gray-500">{{ project.id }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-[#2A1D1A] pr-10 leading-relaxed">{{ project.name }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-gray-500">{{ project.author }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-gray-500 text-center">{{ project.year }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed">{{ project.fundSource }}</td>
+                           <td class="py-6 px-8 text-sm font-black text-[#2A1D1A] text-right">{{ project.budget | number }}</td>
+                        </tr>
+                     }
+                  } @else {
+                     <tr>
+                        <td colspan="6" class="py-20 text-center text-gray-400 font-bold">ยังไม่มีข้อมูลโครงการวิจัย</td>
                      </tr>
                   }
                </tbody>
@@ -70,14 +76,28 @@ import { CommonModule } from '@angular/common';
          </div>
 
          <div class="p-6 border-t border-gray-50 flex justify-center items-center gap-2">
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F9BD15] text-[#2A1D1A] font-black text-xs shadow-sm">1</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 font-bold text-xs hover:bg-gray-50 transition-colors">2</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 font-bold text-xs hover:bg-gray-50 transition-colors">3</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 font-bold text-xs hover:bg-gray-50 transition-colors">4</button>
-            <span class="text-gray-400">...</span>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 font-bold text-xs hover:bg-gray-50 transition-colors">10</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+            <button (click)="prevPage()" [disabled]="currentPage() === 1" 
+               class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+
+            @for (page of pagesArray(); track page) {
+               <button (click)="goToPage(page)"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg font-black text-xs transition-all shadow-sm"
+                  [class.bg-[#F9BD15]]="currentPage() === page"
+                  [class.text-[#2A1D1A]]="currentPage() === page"
+                  [class.text-gray-500]="currentPage() !== page"
+                  [class.hover:bg-gray-50]="currentPage() !== page">
+                  {{ page }}
+               </button>
+            }
+
+            <button (click)="nextPage()" [disabled]="currentPage() === totalPages() || totalPages() === 0"
+   class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"></polyline>
+   </svg>
+</button>
          </div>
       </div>
 
@@ -92,24 +112,35 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class ResearchComponent {
-  // ข้อมูลจำลองสำหรับตารางวิจัย
-  mockProjects = [
-    {
-      id: 1,
-      name: 'การศึกษาผลของการคั่วโดยใช้ไอน้ำร้อนยวด ยิ่งที่มีต่อคุณภาพของเมล็ดกาแฟโรบัสต้าที่สกัดคาเฟอีนออกโดยกระบวนการที่ใช้น้ำ',
-      author: 'ผศ.ดร.ณฐมล จินดาพรรณ',
-      year: '2566',
-      fundSource: 'สำนักงานพัฒนาวิทยาศาสตร์และเทคโนโลยีแห่งชาติ',
-      budget: 600000
-    },
-    // เพิ่มข้อมูลหลอกๆ แถวที่ 2 เพื่อให้เห็นความสวยงามของตาราง
-    {
-      id: 2,
-      name: 'การพัฒนาแพลตฟอร์ม IoT สำหรับการจัดการน้ำในแปลงเกษตรอัจฉริยะ',
-      author: 'รศ.ดร. สมชาย ใจดี',
-      year: '2566',
-      fundSource: 'กองทุนวิจัยมหาวิทยาลัยสยาม',
-      budget: 150000
-    }
-  ];
+  // ข้อมูลจำลองสำหรับตารางวิจัย (ผมลองก๊อปปี้ให้ครบ 12 อันเพื่อจะได้เห็นว่ามันแบ่งเป็น 2 หน้าจริงๆ ครับ)
+  mockProjects = Array.from({ length: 12 }, (_, i) => ({
+    id: i + 1,
+    name: i % 2 === 0 
+      ? 'การศึกษาผลของการคั่วโดยใช้ไอน้ำร้อนยวด ยิ่งที่มีต่อคุณภาพของเมล็ดกาแฟโรบัสต้าที่สกัดคาเฟอีนออกโดยกระบวนการที่ใช้น้ำ' 
+      : 'การพัฒนาแพลตฟอร์ม IoT สำหรับการจัดการน้ำในแปลงเกษตรอัจฉริยะ',
+    author: i % 2 === 0 ? 'ผศ.ดร.ณฐมล จินดาพรรณ' : 'รศ.ดร. สมชาย ใจดี',
+    year: '2566',
+    fundSource: i % 2 === 0 ? 'สำนักงานพัฒนาวิทยาศาสตร์และเทคโนโลยีแห่งชาติ' : 'กองทุนวิจัยมหาวิทยาลัยสยาม',
+    budget: i % 2 === 0 ? 600000 : 150000
+  }));
+
+  // --- ระบบ Pagination ---
+  currentPage = signal(1);
+  itemsPerPage = 10;
+
+  // คำนวณข้อมูลที่จะแสดงเฉพาะหน้านั้นๆ
+  paginatedProjects = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+    return this.mockProjects.slice(startIndex, startIndex + this.itemsPerPage);
+  });
+
+  // คำนวณจำนวนหน้าทั้งหมด
+  totalPages = computed(() => Math.ceil(this.mockProjects.length / this.itemsPerPage));
+
+  // สร้าง Array ตัวเลขหน้า [1, 2, 3...]
+  pagesArray = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
+
+  goToPage(page: number) { this.currentPage.set(page); }
+  nextPage() { if(this.currentPage() < this.totalPages()) this.currentPage.update(p => p + 1); }
+  prevPage() { if(this.currentPage() > 1) this.currentPage.update(p => p - 1); }
 }

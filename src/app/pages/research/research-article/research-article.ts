@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, computed } from '@angular/core'; // ⭐️ นำเข้า signal และ computed
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -49,13 +49,13 @@ import { CommonModule } from '@angular/common';
             </div>
 
             <div class="bg-gray-50 p-1.5 rounded-2xl flex items-center border border-gray-100">
-               <button (click)="activeTab = 'conference'" 
+               <button (click)="activeTab = 'conference'; currentPage.set(1)" 
                        [class.bg-white]="activeTab === 'conference'" [class.shadow-sm]="activeTab === 'conference'" [class.text-[#2A1D1A]]="activeTab === 'conference'"
                        [class.text-gray-400]="activeTab !== 'conference'"
                        class="px-8 py-2.5 rounded-xl font-bold text-sm transition-all">
                   ประชุมวิจัย
                </button>
-               <button (click)="activeTab = 'journal'" 
+               <button (click)="activeTab = 'journal'; currentPage.set(1)" 
                        [class.bg-white]="activeTab === 'journal'" [class.shadow-sm]="activeTab === 'journal'" [class.text-[#2A1D1A]]="activeTab === 'journal'"
                        [class.text-gray-400]="activeTab !== 'journal'"
                        class="px-8 py-2.5 rounded-xl font-bold text-sm transition-all">
@@ -77,14 +77,20 @@ import { CommonModule } from '@angular/common';
                   </tr>
                </thead>
                <tbody class="divide-y divide-gray-50">
-                  @for (article of mockArticles; track article.id) {
-                     <tr class="hover:bg-gray-50/50 transition-colors">
-                        <td class="py-6 px-8 text-sm font-bold text-gray-500 align-top">{{ article.id }}</td>
-                        <td class="py-6 px-4 text-sm font-bold text-[#2A1D1A] leading-relaxed align-top">{{ article.title }}</td>
-                        <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top whitespace-pre-line">{{ article.authors }}</td>
-                        <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top">{{ article.conferenceName }}</td>
-                        <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top">{{ article.location }}</td>
-                        <td class="py-6 px-8 text-sm font-bold text-[#2A1D1A] align-top">{{ article.date }}</td>
+                  @if (paginatedArticles().length > 0) {
+                     @for (article of paginatedArticles(); track article.id) {
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                           <td class="py-6 px-8 text-sm font-bold text-gray-500 align-top">{{ article.id }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-[#2A1D1A] leading-relaxed align-top">{{ article.title }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top whitespace-pre-line">{{ article.authors }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top">{{ article.conferenceName }}</td>
+                           <td class="py-6 px-4 text-sm font-bold text-gray-500 leading-relaxed align-top">{{ article.location }}</td>
+                           <td class="py-6 px-8 text-sm font-bold text-[#2A1D1A] align-top">{{ article.date }}</td>
+                        </tr>
+                     }
+                  } @else {
+                     <tr>
+                        <td colspan="6" class="py-20 text-center text-gray-400 font-bold">ยังไม่มีข้อมูลบทความวิจัย</td>
                      </tr>
                   }
                </tbody>
@@ -92,13 +98,28 @@ import { CommonModule } from '@angular/common';
          </div>
 
          <div class="p-6 border-t border-gray-50 flex justify-center items-center gap-2">
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F9BD15] text-[#2A1D1A] font-black text-xs shadow-sm">1</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 font-bold text-xs hover:bg-gray-50 transition-colors">2</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 font-bold text-xs hover:bg-gray-50 transition-colors">3</button>
-            <span class="text-gray-400">...</span>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 font-bold text-xs hover:bg-gray-50 transition-colors">10</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+            <button (click)="prevPage()" [disabled]="currentPage() === 1" 
+               class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+
+            @for (page of pagesArray(); track page) {
+               <button (click)="goToPage(page)"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg font-black text-xs transition-all shadow-sm"
+                  [class.bg-[#F9BD15]]="currentPage() === page"
+                  [class.text-[#2A1D1A]]="currentPage() === page"
+                  [class.text-gray-500]="currentPage() !== page"
+                  [class.hover:bg-gray-50]="currentPage() !== page">
+                  {{ page }}
+               </button>
+            }
+
+            <button (click)="nextPage()" [disabled]="currentPage() === totalPages() || totalPages() === 0"
+               class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+               </svg>
+            </button>
          </div>
       </div>
 
@@ -113,18 +134,35 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class ResearchArticleComponent {
-  // สร้างตัวแปรคุม Tab (ประชุมวิจัย / วารสาร)
   activeTab = 'conference'; 
 
-  // ข้อมูลจำลองสำหรับบทความวิจัย
-  mockArticles = [
-    {
-      id: 1,
-      title: 'การพัฒนาแอปพลิเคชัน "Reach You" สำหรับการบริหารจัดการขยะก่อสร้างบนแพลตฟอร์มแอนดรอยด์',
-      authors: 'จรรยา แหยมเจริญ,\nพัสรัฐ อาจหาญศิริวงศ์,\nอัตพล ยมพ้วย\nและ ณพงษ์ สมัครกิจ',
-      conferenceName: 'การประชุมวิชาการระดับชาติ ครั้งที่ 17 มหาวิทยาลัยราชภัฏนครปฐม',
-      location: 'โรงแรม ไมด้า แกรนด์ ทวารวดี นครปฐม',
-      date: '3 กรกฎาคม 2568'
-    }
-  ];
+  // ข้อมูลจำลอง (ผมสร้างไว้ 12 ตัวเพื่อจำลองให้เห็นว่ามันแบ่งเป็น 2 หน้า)
+  mockArticles = Array.from({ length: 12 }, (_, i) => ({
+    id: i + 1,
+    title: `การพัฒนาแอปพลิเคชัน "Reach You" สำหรับการบริหารจัดการขยะ (ฉบับที่ ${i + 1})`,
+    authors: 'จรรยา แหยมเจริญ,\nพัสรัฐ อาจหาญศิริวงศ์,\nอัตพล ยมพ้วย\nและ ณพงษ์ สมัครกิจ',
+    conferenceName: 'การประชุมวิชาการระดับชาติ ครั้งที่ 17 มหาวิทยาลัยราชภัฏนครปฐม',
+    location: 'โรงแรม ไมด้า แกรนด์ ทวารวดี นครปฐม',
+    date: '3 กรกฎาคม 2568'
+  }));
+
+  // --- ระบบ Pagination ---
+  currentPage = signal(1);
+  itemsPerPage = 10;
+
+  // คำนวณข้อมูลที่จะแสดงเฉพาะหน้านั้นๆ
+  paginatedArticles = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+    return this.mockArticles.slice(startIndex, startIndex + this.itemsPerPage);
+  });
+
+  // คำนวณจำนวนหน้าทั้งหมด
+  totalPages = computed(() => Math.ceil(this.mockArticles.length / this.itemsPerPage));
+
+  // สร้าง Array ตัวเลขหน้า [1, 2, 3...]
+  pagesArray = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
+
+  goToPage(page: number) { this.currentPage.set(page); }
+  nextPage() { if(this.currentPage() < this.totalPages()) this.currentPage.update(p => p + 1); }
+  prevPage() { if(this.currentPage() > 1) this.currentPage.update(p => p - 1); }
 }

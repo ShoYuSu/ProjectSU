@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
       <!-- ================= Header ================= -->
       <div class="flex items-center gap-3">
         <div class="w-1.5 h-6 bg-[#F9BD15] rounded-full"></div>
-        <h2 class="font-black text-[#846058] text-xl uppercase tracking-widest">Dashboard</h2>
+        <h2 class="font-black text-[#2A1D1A] text-xl uppercase tracking-widest">Dashboard</h2>
       </div>
 
       <!-- ================= 3 Summary Cards ================= -->
