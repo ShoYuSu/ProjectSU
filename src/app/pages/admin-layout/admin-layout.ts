@@ -332,9 +332,10 @@ import { RouterOutlet, RouterLink, RouterLinkActive, ActivatedRoute } from '@ang
           [ngClass]="isMiniSidebar() ? 'p-3' : 'p-6'"
         >
           @if (userRole === 'teacher') {
+
             <a
               href="http://localhost:4200/home"
-              target="_blank"
+
               class="flex items-center rounded-2xl border border-white/5 transition-all group shadow-sm bg-white/5 hover:bg-white/10"
               [ngClass]="isMiniSidebar() ? 'justify-center p-3' : 'justify-between p-4'"
             >
@@ -390,7 +391,6 @@ import { RouterOutlet, RouterLink, RouterLinkActive, ActivatedRoute } from '@ang
           @if (userRole === 'admin') {
             <a
               href="http://localhost:4200/system-dashboard"
-              target="_blank"
               class="flex items-center rounded-2xl border border-white/5 transition-all group shadow-sm bg-white/5 hover:bg-white/10"
               [ngClass]="isMiniSidebar() ? 'justify-center p-3' : 'justify-between p-4'"
             >
